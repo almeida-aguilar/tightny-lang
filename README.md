@@ -4,6 +4,21 @@
 
 Al compilar directamente a código de Arduino, Tightny ofrece una alternativa limpia y segura a C++, permitiendo a los desarrolladores escribir lógica de hardware con una sintaxis expresiva, fuertemente tipada y altamente modular, sin sacrificar rendimiento.
 
+## 🗝️ Palabras Reservadas (Keywords)
+Tightny mantiene un diseño minimalista para facilitar el aprendizaje y la implementación del compilador.
+
+**Lista de Keywords (22):**
+`var`, `const`, `fun`, `if`, `then`, `elif`, `else`, `end`, `while`, `do`, `for`, `next`, `break`, `continue`, `switch`, `case`, `return`, `struct`, `enum`, `and`, `or`, `not`.
+
+**Comparativa de Complejidad (Número de Keywords):**
+
+| Lenguaje | Total Keywords | Filosofía |
+| :--- | :---: | :--- |
+| **Tightny** | **22** | **Minimalismo 80/20** |
+| Lua | 22 | Simplicidad y Scripting |
+| C (C89) | 32 | Cercanía al Hardware |
+| Zig | 36 | Seguridad y Modernidad |
+
 ## 📋 Índice
 - [Características Principales](#-características-principales)
 - [Modularidad con @add](#-modularidad-con-add)
@@ -16,6 +31,7 @@ Al compilar directamente a código de Arduino, Tightny ofrece una alternativa li
   - [Funciones y Pasaje de Parámetros](#funciones-y-pasaje-de-parámetros)
   - [Bloques sin implementar (...)](#-bloques-sin-implementar-)
   - [Arrays (Arreglos Estáticos)](#️-arrays-arreglos-estáticos)
+  - [Enums (Enumeraciones)](#-enums-enumeraciones)
   - [Structs (Estructuras de Datos)](#-structs-estructuras-de-datos)
   - [Directivas del Sistema (@)](#️-directivas-del-sistema-)
   - [Salida por Serial](#️-salida-por-serial)
@@ -75,6 +91,13 @@ end
 
 ## 📝 Guía de Sintaxis
 
+### Reglas del Lenguaje
+*   **Sensibilidad a Mayúsculas:** Tightny es **case-sensitive**. `Variable` y `variable` son distintas. Todas las palabras clave (`if`, `while`, `fun`, etc.) deben escribirse en minúsculas.
+*   **Identificadores:** Deben comenzar con una letra o guion bajo (`_`), seguidos de letras, números o guiones bajos. Los nombres que comienzan con `@` están reservados para directivas del sistema.
+*   **Comentarios:**
+    *   Una línea: `-- comentario`
+    *   Multilínea: `--[[ comentario largo ]]`
+
 ### Variables y Constantes
 Tightny utiliza una sintaxis clara para la declaración de datos. Por defecto, la asignación de variables crea una **copia** del valor, no una referencia.
 
@@ -96,9 +119,10 @@ Soporta tipos con tamaño explícito para un control total de la memoria. Ademá
 | Tipo | Descripción | Rango / Ejemplo |
 | :--- | :--- | :--- |
 | `b1` | Booleano / Bit | 0 a 1 |
-| `u8`, `u16`, `u32` | Enteros sin signo | `0xAF`, `0b1010` |
+| `u8`, `u16`, `u32` | Enteros sin signo | `0xAF`, `0b1010`, `'A'` |
 | `i8`, `i16`, `i32` | Enteros con signo | 8, 16, 32 bits |
 
+*   **Caracteres (`' '`):** Los literales de un solo carácter se tratan como un tipo `u8` (valor ASCII). Útiles para protocolos Serial y comandos de hardware (ej. `'A'`, `'\n'`).
 *   **Binarios (`0b`):** Útiles para ver la posición exacta de los bits (ej. `0b10100000`).
 *   **Hexadecimales (`0x`):** Estándar para direcciones de memoria y colores (ej. `0xFF0000`).
 
@@ -116,6 +140,7 @@ var porcentaje : u8 = @as(u8, (@as(u32, raw) * 100) / 1023)
 Tightny ofrece un conjunto completo de operadores optimizados para legibilidad y manipulación de hardware.
 
 *   **Aritméticos:** `+`, `-`, `*`, `/`, `%` (módulo). La división `/` entre enteros siempre trunca hacia abajo (floor).
+*   **Asignación Compuesta:** `+=`, `-=`, `*=`, `/=`, `%=`, `&=`, `|=`, `^=`, `<<=`, `>>=`.
 *   **Lógicos (Estilo Lua):** `and`, `or`, `not`. Evitan la confusión de símbolos y mejoran la lectura.
 *   **Comparación:** `==`, `!=`, `<`, `>`, `<=`, `>=`.
 *   **Bitwise (Hardware):** `&` (AND), `|` (OR), `^` (XOR), `~` (NOT), `<<` (L-Shift), `>>` (R-Shift).
@@ -138,15 +163,23 @@ else
   @digital_write(PIN_LED_ROJO, LOW)
 end
 
--- Bucle: esperar hasta que el sensor esté listo
+-- Bucle: esperar hasta que el sensor esté listo o timeout
+var inicio : u32 = @millis()
 while @digital_read(PIN_SENSOR_RDY) == LOW do
+  if (@millis() - inicio) > 1000 then
+    break    -- salir por timeout
+  end
   @delay(10)
 end
 
 -- Bucle for: tomar 8 lecturas para promedio de ruido ADC
 var suma : u32 = 0
 for var i : u8 = 0 while i < 8 next i = i + 1 do
-  suma = suma + @as(u32, @analog_read(A0))
+  var lectura : u16 = @analog_read(A0)
+  if lectura == 0 then
+    continue  -- ignorar lecturas nulas
+  end
+  suma += @as(u32, lectura)
 end
 var promedio : u16 = @as(u16, suma / 8)
 
@@ -245,6 +278,29 @@ end
 var distancia_cm : u16 = @as(u16, suma / @len(distancias))
 ```
 
+### 🏷️ Enums (Enumeraciones)
+Los `enum` permiten definir un conjunto de constantes relacionadas de forma limpia, ideales para máquinas de estados. Internamente, el compilador asigna valores autoincrementales empezando desde `0`.
+
+```ty
+enum EstadoRiego =
+  IDLE,
+  REGANDO,
+  ENFRIAMIENTO,
+  ERROR
+end
+
+var estado_actual : EstadoRiego = EstadoRiego.IDLE
+
+fun actualizar_sistema() =
+  switch estado_actual do
+    case EstadoRiego.IDLE then
+      ...
+    case EstadoRiego.REGANDO then
+      ...
+  end
+end
+```
+
 ### 📦 Structs (Estructuras de Datos)
 Para agrupar datos relacionados. En Tightny, los structs son contenedores puros (estilo C) sin métodos internos, lo que mantiene el lenguaje ligero y predecible.
 
@@ -301,23 +357,30 @@ Las funciones nativas de Arduino se acceden mediante el prefijo `@` y usan `snak
 | `@millis()` | `millis()` |
 | `@as(tipo, val)` | Cast explícito |
 | `@len(array)` | Longitud de array |
+| `@map(val, in_min, in_max, out_min, out_max)` | Escalamiento de enteros (i32) |
 | `@div_ceil(a, b)` | División con redondeo hacia arriba |
 | `@div_round(a, b)` | División con redondeo al más cercano |
 
 ### 🖨️ Salida por Serial
-Tightny no implementa un tipo `string`. Los literales de texto son válidos **únicamente** como argumentos de las directivas de salida serial. Fuera de ese contexto, no existe el tipo cadena.
+Tightny no implementa un tipo `string` dinámico para evitar el uso de memoria heap. Los literales de texto son válidos **únicamente** como argumentos de las directivas de salida serial.
+
+Para imprimir múltiples valores o "concatenar" información, las directivas `@print` y `@println` son **variádicas**, permitiendo pasar múltiples argumentos de cualquier tipo separados por comas. El compilador se encarga de llamar secuencialmente a las funciones de impresión.
 
 ```ty
--- Válido: debug de sensor durante desarrollo
-var temp : u16 = leer_promedio(A0, 8)
-@print("Temperatura raw: ")
-@println(temp)
+-- Válido: múltiples argumentos en una sola línea
+var temp : u16 = 25
+@print("Lectura del sensor: ", temp, " grados Celsius")
+@println() -- Salto de línea vacío
 
--- Inválido: no existe el tipo string en Tightny
-var msg : string = "hola"  -- error de compilación
+-- Válido: uso de expresiones dentro del print
+@println("El doble de la temperatura es: ", temp * 2)
+
+-- Inválido: no existe el tipo string ni la concatenación con '+'
+var msg : string = "hola"       -- error de compilación
+@print("Valor: " + temp)        -- error de compilación
 ```
 
-> **Nota:** Los strings dinámicos requieren gestión de heap incompatible con microcontroladores de recursos limitados. Los literales en `@print` y `@println` se almacenan en flash en tiempo de compilación.
+> **Nota:** Los literales de texto se almacenan en la memoria Flash (PROGMEM) en tiempo de compilación para ahorrar RAM.
 
 ---
 
