@@ -2,7 +2,7 @@
 
 **Tightny** es un lenguaje de programación moderno diseñado específicamente para sistemas embebidos. Inspirado en la simplicidad sintáctica de **Lua** y la robustez y control de **Zig**, Tightny busca modernizar y agilizar el desarrollo en el ecosistema Arduino.
 
-Al compilar directamente a código de Arduino, Tightny ofrece una alternativa limpia y segura a C++, permitiendo a los desarrolladores escribir lógica de hardware con una sintaxis expresiva, fuertemente tipada y altamente modular, sin sacrificar rendimiento.
+Tightny compila a LLVM IR, que luego genera binario nativo para el microcontrolador objetivo. Las directivas del sistema (`@`) se enlazan contra el framework de Arduino como librería externa, ofreciendo una alternativa limpia y segura a C++ sin sacrificar rendimiento.
 
 ## 🗝️ Palabras Reservadas (Keywords)
 Tightny mantiene un diseño minimalista para facilitar el aprendizaje y la implementación del compilador.
@@ -14,7 +14,7 @@ Tightny mantiene un diseño minimalista para facilitar el aprendizaje y la imple
 
 | Lenguaje | Total Keywords | Filosofía |
 | :--- | :---: | :--- |
-| **Tightny** | **22** | **Minimalismo 80/20** |
+| **Tightny** | **22** | **Minimalismo para embebidos** |
 | Lua | 22 | Simplicidad y Scripting |
 | C (C89) | 32 | Cercanía al Hardware |
 | Zig | 36 | Seguridad y Modernidad |
@@ -393,22 +393,22 @@ Puedes estructurar las definiciones de tu hardware en archivos separados.
 
 **`boolean.ty`**
 ```ty
-const FALSE 0
-const TRUE  1
+const FALSE : b1 = 0
+const TRUE  : b1 = 1
 ```
 
 **`pin_mode.ty`**
 ```ty
-const INPUT 0
-const OUTPUT 1 
-const INPUT_PULLUP 2
-const INPUT_PULLDOWN 3
+const INPUT        : u8 = 0
+const OUTPUT       : u8 = 1
+const INPUT_PULLUP : u8 = 2
+const INPUT_PULLDOWN : u8 = 3
 ```
 
 **`state.ty`**
 ```ty
-const LOW 0
-const HIGH 1
+const LOW  : b1 = 0
+const HIGH : b1 = 1
 ```
 
 ### El Archivo Principal
