@@ -1,8 +1,8 @@
 # Tightny (.ty)
 
-**Tightny** es un lenguaje de programación moderno diseñado específicamente para sistemas embebidos. Inspirado en la simplicidad sintáctica de **Lua** y la robustez y control de **Zig**, Tightny busca modernizar y agilizar el desarrollo en el ecosistema Arduino.
+**Tightny** es un lenguaje de programación moderno diseñado específicamente para sistemas embebidos. Inspirado en la simplicidad sintáctica de **Lua** y la robustez y control de **Zig**, Tightny busca modernizar y agilizar el desarrollo en el ecosistema STM32.
 
-Tightny compila a LLVM IR, que luego genera binario nativo para el microcontrolador objetivo. Las directivas del sistema (`@`) se enlazan contra el framework de Arduino como librería externa, ofreciendo una alternativa limpia y segura a C++ sin sacrificar rendimiento.
+Tightny compila a LLVM IR, que luego genera binario nativo para el microcontrolador objetivo (ARM Cortex-M4, target `thumbv7em-none-eabihf`). Las directivas del sistema (`@`) se enlazan contra el HAL de STM32 como librería externa, ofreciendo una alternativa limpia y segura a C sin sacrificar rendimiento.
 
 ## 🗝️ Palabras Reservadas (Keywords)
 Tightny mantiene un diseño minimalista para facilitar el aprendizaje y la implementación del compilador.
@@ -50,44 +50,37 @@ Tightny mantiene un diseño minimalista para facilitar el aprendizaje y la imple
 ## 📂 Modularidad con @add
 `@add` copia el contenido del archivo indicado en el punto exacto donde aparece la directiva, antes de compilar. No existe separación de namespaces ni resolución de dependencias: el orden de los `@add` es el orden del código final.
 
-**`esp32_pins.ty`**
+**`stm32f4_pins.ty`**
 ```ty
--- Pines digitales
-const D2  : u8 = 2
-const D4  : u8 = 4
-const D5  : u8 = 5
-const D14 : u8 = 14
-const D18 : u8 = 18
-const D19 : u8 = 19
-const D21 : u8 = 21
-const D22 : u8 = 22
+-- Pines Puerto A
+const PA0  : u8 = 0
+const PA1  : u8 = 1
+const PA5  : u8 = 5   -- LED integrado (LD2) en Nucleo-F401RE
+const PA6  : u8 = 6
+const PA7  : u8 = 7
 
--- Pines analógicos
-const A0 : u8 = 36
-const A3 : u8 = 39
-const A6 : u8 = 34
-const A7 : u8 = 35
+-- Pines Puerto B
+const PB0  : u8 = 8
+const PB6  : u8 = 14
+const PB7  : u8 = 15
 
--- Alimentación (referencia, no usables como GPIO)
-const V33  : u8 = 0   -- 3.3V
-const GND  : u8 = 0
-const VUSB : u8 = 0   -- 5V desde USB
+-- Pines Puerto C
+const PC0  : u8 = 16
+const PC1  : u8 = 17
+const PC13 : u8 = 29  -- Botón de usuario (B1) en Nucleo-F401RE
 ```
 
 **`main.ty`**
 ```ty
-@add(esp32_pins.ty)   -- D2, A0, etc. ya están disponibles aquí
+@add(stm32f4_pins.ty)   -- PA5, PC13, etc. ya están disponibles aquí
 
 fun @setup() =
-  @pin_mode(D2,  OUTPUT)
-  @pin_mode(D14, INPUT_PULLUP)
-  @pin_mode(A0,  INPUT)
+  @pin_mode(PA5,  OUTPUT)   -- LED integrado
+  @pin_mode(PC13, INPUT_PULLUP)  -- Botón de usuario
 end
 ```
 
 > `@add` no protege contra redefiniciones. Si dos archivos declaran la misma constante, el compilador lanzará un error. El orden de los `@add` importa.
-
----
 
 ## 📝 Guía de Sintaxis
 
@@ -380,7 +373,7 @@ var msg : string = "hola"       -- error de compilación
 @print("Valor: " + temp)        -- error de compilación
 ```
 
-> **Nota:** Los literales de texto se almacenan en la memoria Flash (PROGMEM) en tiempo de compilación para ahorrar RAM.
+> **Nota:** Los literales de texto se almacenan en la memoria Flash del microcontrolador (región `.rodata`) en tiempo de compilación para ahorrar RAM.
 
 ---
 
@@ -399,9 +392,9 @@ const TRUE  : b1 = 1
 
 **`pin_mode.ty`**
 ```ty
-const INPUT        : u8 = 0
-const OUTPUT       : u8 = 1
-const INPUT_PULLUP : u8 = 2
+const INPUT          : u8 = 0
+const OUTPUT         : u8 = 1
+const INPUT_PULLUP   : u8 = 2
 const INPUT_PULLDOWN : u8 = 3
 ```
 
