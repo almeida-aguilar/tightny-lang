@@ -1,0 +1,8 @@
+var arr : [5]u8 = [1, 2, 3, 4, 5]
+var matrix : [2][2]i16 = [[1, 2], [3, 4]]
+
+fun @array_test() =
+    var x : u8 = arr[0]
+    arr[1] = 10
+    var y : i16 = matrix[0][1]
+end

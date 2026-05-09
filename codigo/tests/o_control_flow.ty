@@ -1,0 +1,24 @@
+fun @flow() =
+    var i : u8 = 0
+    while i < 10 do
+        i += 1
+        if i == 5 then
+            continue
+        end
+        if i == 8 then
+            break
+        end
+    end
+
+    for var j : u8 = 0 while j < 5 next j += 1 do
+        @print(j)
+    end
+
+    switch i do
+        case 1 then @print(1)
+        case 2 then @print(2)
+        else @print(0)
+    end
+
+    return
+end

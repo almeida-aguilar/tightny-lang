@@ -1,0 +1,13 @@
+-- Esto es un comentario :D
+
+--[[
+Esto tambien es un comentrario
+]]
+
+--[[
+    @print("esto no deria poder ser compilado")
+]]
+
+---[[
+    @print("esto sí deberia poder ser compilado")
+--]]

@@ -1,0 +1,7 @@
+enum Empty = end -- Error: enum must have at least one member
+
+struct Wrong =
+    var a i16 = 0 -- Error: missing colon
+end
+
+var p : Point = {x: 10, y} -- Error: struct field init must have expression

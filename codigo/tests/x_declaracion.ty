@@ -1,0 +1,15 @@
+var a b1 = 0
+var b : u8 = 'A1'
+var c : u16 = 0b10102
+var d : u32 = 0xFFFFFZ
+var e : i8 = -1A
+var f : i16 = -2?
+var g : i32 = -3.2
+
+const h : b1 = TRUE
+const i : u8 = ''
+const j : u16 = 0101
+const k : u32 = 000000
+const l : i8 = -0
+const m : i16 = -5_7
+const n : i32 = -6¡

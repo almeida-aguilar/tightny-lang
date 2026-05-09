@@ -175,7 +175,7 @@ class tightnyParser ( Parser ):
                       "GE", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", 
                       "RBRACKET", "COLON", "COMMA", "DOT", "ELLIPSIS", "AT_ID", 
                       "ID", "HEX_LIT", "BIN_LIT", "INT_LIT", "CHAR_LIT", 
-                      "STRING_LIT", "COMMENT", "BLOCK_COMMENT", "WS" ]
+                      "STRING_LIT", "BLOCK_COMMENT", "COMMENT", "WS" ]
 
     RULE_program = 0
     RULE_topLevelItem = 1
@@ -274,8 +274,8 @@ class tightnyParser ( Parser ):
     INT_LIT=59
     CHAR_LIT=60
     STRING_LIT=61
-    COMMENT=62
-    BLOCK_COMMENT=63
+    BLOCK_COMMENT=62
+    COMMENT=63
     WS=64
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):

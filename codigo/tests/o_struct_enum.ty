@@ -1,0 +1,19 @@
+enum Color = RED, GREEN, BLUE end
+
+struct Point =
+    var x : i16 = 0
+    var y : i16 = 0
+end
+
+var p : Point = {x: 10, y: 20}
+var c : Color = RED
+
+fun @get_x(pt : Point) : i16 =
+    return pt.x
+end
+
+fun @main() =
+    p.x = 100
+    p.y = 200
+    var x : i16 = p.x
+end

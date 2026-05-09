@@ -1,0 +1,5 @@
+var a : i16 = 10 + 2 * 3 - (4 / 2)
+var b : b1 = (a > 5) and (a <= 20) or not (a == 10)
+var c : u32 = 0x01 << 2 | 0x02 >> 1 ^ 0x03 & 0xFF
+var d : i8 = -5 % 2
+var e : u16 = ~0x00

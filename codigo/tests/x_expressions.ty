@@ -1,0 +1,3 @@
+var a : i16 = 10 + * 2 -- Error: binary operator needs two operands
+var b : b1 = and TRUE -- Error: 'and' is binary
+var c : u8 = (10 + 2 -- Error: missing closing parenthesis

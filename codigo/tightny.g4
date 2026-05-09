@@ -194,7 +194,7 @@ CHAR_LIT : '\'' ( '\\' . | ~['\r\n] ) '\'' ;
 STRING_LIT : '"' ( '\\' . | ~[\\"\r\n] )* '"' ;
 
 // Comments
-COMMENT : '--' ~'[' ~[\r\n]* -> skip ;
 BLOCK_COMMENT : '--[[' .*? ']]' -> skip ;
+COMMENT       : '--' ~[\r\n]* -> skip ;
 
 WS : [ \t\r\n]+ -> skip ;
