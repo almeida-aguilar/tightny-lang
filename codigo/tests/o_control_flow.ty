@@ -1,4 +1,4 @@
-fun @flow() =
+fun flow() =
     var i : u8 = 0
     while i < 10 do
         i += 1

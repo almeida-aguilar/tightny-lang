@@ -1,6 +1,6 @@
 @add(boolean.ty)
 @add(state.ty)
-@add(pin_mode.ty)
+@add(pin_stm32f4.ty)
 
 const LED_AZUL  : u8 = 2
 const LED_VERDE : u8 = 18

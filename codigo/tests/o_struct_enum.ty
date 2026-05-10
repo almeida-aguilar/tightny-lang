@@ -8,7 +8,7 @@ end
 var p : Point = {x: 10, y: 20}
 var c : Color = RED
 
-fun @get_x(pt : Point) : i16 =
+fun get_x(pt : Point) : i16 =
     return pt.x
 end
 

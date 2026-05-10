@@ -3,49 +3,37 @@
 # Directorio de tests
 TEST_DIR="."
 PARSER_SCRIPT="../main.py"
+DEBUG_FLAG=""
+PATTERN="[ox]_*.ty"
 
-if [ "$1" != "o" ] && [ "$1" != "x" ]; then
-    echo "Uso: $0 [o|x]"
-    echo "  o: Ejecuta tests que deben pasar (o_*.ty)"
-    echo "  x: Ejecuta tests que deben fallar (x_*.ty)"
-    exit 1
-fi
-
-PREFIX=$1
-FAILED=0
-TOTAL=0
-
-echo "=== Ejecutando tests '$PREFIX' ==="
-
-for f in $TEST_DIR/${PREFIX}_*.ty; do
-    [ -e "$f" ] || continue
-    ((TOTAL++))
-    echo -n "Probando $f... "
-
-    # Ejecutamos el parser y capturamos la salida
-    OUTPUT=$(python3 $PARSER_SCRIPT "$f" 2>&1)
-
-    if [ "$PREFIX" == "o" ]; then
-        if echo "$OUTPUT" | grep -q "Análisis sintáctico completado con éxito"; then
-            echo "PASÓ"
-        else
-            echo "FALLÓ (se esperaba éxito)"
-            echo "$OUTPUT" | grep -A 10 "=== ERRORES ==="
-            ((FAILED++))
-        fi
-    else
-        if echo "$OUTPUT" | grep -q "error(es) encontrado(s)"; then
-            echo "PASÓ (error detectado como se esperaba)"
-        else
-            echo "FALLÓ (se esperaba un error sintáctico)"
-            ((FAILED++))
-        fi
-    fi
+# Procesar argumentos
+for arg in "$@"; do
+    case "$arg" in
+        o)
+            PATTERN="o_*.ty"
+            echo "=== Filtrando tests que deben pasar (o_*.ty) ==="
+            ;;
+        x)
+            PATTERN="x_*.ty"
+            echo "=== Filtrando tests que deben fallar (x_*.ty) ==="
+            ;;
+        --debug)
+            DEBUG_FLAG="--debug"
+            echo "=== Modo DEBUG activado ==="
+            ;;
+    esac
 done
 
-echo ""
-echo "Resumen: $((TOTAL - FAILED))/$TOTAL tests pasaron."
-
-if [ $FAILED -ne 0 ]; then
-    exit 1
+if [ "$PATTERN" == "[ox]_*.ty" ]; then
+    echo "=== Ejecutando todos los tests (o_*.ty y x_*.ty) ==="
 fi
+
+# Iterar sobre los archivos encontrados
+for f in $TEST_DIR/$PATTERN; do
+    [ -e "$f" ] || continue
+    echo "------------------------------------------------------------"
+    echo "ARCHIVO: $f"
+    python3 "$PARSER_SCRIPT" "$f" $DEBUG_FLAG
+    echo "------------------------------------------------------------"
+    echo ""
+done

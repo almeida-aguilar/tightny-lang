@@ -187,8 +187,8 @@ AT_ID : '@' [a-zA-Z_] [a-zA-Z_0-9]* ;
 ID    : [a-zA-Z_] [a-zA-Z_0-9]* ;
 
 // Literals
-HEX_LIT : '0x' [0-9a-fA-F]+ ;
-BIN_LIT : '0b' [01]+ ;
+HEX_LIT : '0x' [0-9a-fA-F]+ ; // 0xFFFFFF
+BIN_LIT : '0b' [01]+ ; // 0b101101
 INT_LIT : [0-9]+ ;
 CHAR_LIT : '\'' ( '\\' . | ~['\r\n] ) '\'' ;
 STRING_LIT : '"' ( '\\' . | ~[\\"\r\n] )* '"' ;
