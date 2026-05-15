@@ -53,6 +53,14 @@ class SymbolTable:
         for scope_syms in self._table.values():
             for sym in scope_syms.values():
                 if not sym.used:
+                    kind = "La variable"
+                    if sym.type_ == 'function':
+                        kind = "La función"
+                    elif sym.type_ == 'struct':
+                        kind = "El struct"
+                    elif sym.type_ == 'enum':
+                        kind = "El enum"
+
                     warns.append(
-                    f"[Advertencia, línea {sym.line}] La variable '{sym.name}' nunca fue usada")
+                    f"[Advertencia, línea {sym.line}] {kind} '{sym.name}' nunca fue usada")
         return warns
