@@ -231,19 +231,17 @@ pin boton : pullup = 2
 var encendido = 0
 var ciclos    = 0
 
-while true do
-    if read(boton) == low then
-        # Botón presionado: parpadeo
-        write(led, high)
-        wait(300)
-        write(led, low)
-        wait(300)
-        ciclos = ciclos + 1
-    else
-        # Botón suelto: LED apagado
-        write(led, low)
-        ciclos = 0
-    end
+if read(boton) == low then
+    # Botón presionado: parpadeo
+    write(led, high)
+    wait(300)
+    write(led, low)
+    wait(300)
+    ciclos = ciclos + 1
+else
+    # Botón suelto: LED apagado
+    write(led, low)
+    ciclos = 0
 end
 ```
 
@@ -251,11 +249,12 @@ end
 
 ```cpp
 // Generado por el transpiler Tightny
+#include <stdint.h>
 
-int led   = 13;
-int boton = 2;
-int encendido = 0;
-int ciclos    = 0;
+const int32_t led   = 13;
+const int32_t boton = 2;
+int32_t encendido = 0;
+int32_t ciclos    = 0;
 
 void setup() {
     pinMode(led,   OUTPUT);
@@ -263,17 +262,15 @@ void setup() {
 }
 
 void loop() {
-    while (true) {
-        if (digitalRead(boton) == LOW) {
-            digitalWrite(led, HIGH);
-            delay(300);
-            digitalWrite(led, LOW);
-            delay(300);
-            ciclos = ciclos + 1;
-        } else {
-            digitalWrite(led, LOW);
-            ciclos = 0;
-        }
+    if (digitalRead(boton) == LOW) {
+        digitalWrite(led, HIGH);
+        delay(300);
+        digitalWrite(led, LOW);
+        delay(300);
+        ciclos = ciclos + 1;
+    } else {
+        digitalWrite(led, LOW);
+        ciclos = 0;
     }
 }
 ```
