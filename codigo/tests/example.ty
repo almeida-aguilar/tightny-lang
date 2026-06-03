@@ -1,0 +1,11 @@
+pin LED : out = 10
+pin BUTTON : in = 2
+
+var buttonState = 0 # todo es un int32
+var ledState = 0
+
+if buttonState == 1 then
+    ledState = 1
+else
+    ledState = 0
+end
