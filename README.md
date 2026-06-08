@@ -228,7 +228,7 @@ pin led   : out    = 13
 pin boton : pullup = 2
 
 # Estado
-var encendido = 0
+var encendido = false
 var ciclos    = 0
 
 if read(boton) == low then
