@@ -210,7 +210,7 @@ Equivale a `delay(ms)` en Arduino.
 | `write(led, low)` | `digitalWrite(13, LOW)` |
 | `read(boton)` | `digitalRead(2)` |
 | `wait(500)` | `delay(500)` |
-| `var x = 0` | `int x = 0;` (variable global) |
+| `var x = 0` | `int32_t x = 0;` (variable global) |
 | `# comentario` | `// comentario` |
 | `and` / `or` / `not` | `&&` / `\|\|` / `!` |
 | `high` / `true` | `HIGH` / `true` |
@@ -222,6 +222,8 @@ Equivale a `delay(ms)` en Arduino.
 
 El siguiente programa hace parpadear un LED mientras un botón esté presionado, y detiene el parpadeo en cuanto se suelta.
 
+El siguiente programa alterna entre dos modos al presionar un botón: si `encendido` es `true`, parpadea el LED 5 veces; si es `false`, apaga el LED.
+
 ```ty
 # Hardware
 pin led   : out    = 13
@@ -232,16 +234,19 @@ var encendido = false
 var ciclos    = 0
 
 if read(boton) == low then
-    # Botón presionado: parpadeo
-    write(led, high)
-    wait(300)
-    write(led, low)
-    wait(300)
-    ciclos = ciclos + 1
-else
-    # Botón suelto: LED apagado
-    write(led, low)
-    ciclos = 0
+    encendido = not encendido
+    if encendido == true then
+        ciclos = 0
+        while ciclos < 5 do
+            write(led, high)
+            wait(200)
+            write(led, low)
+            wait(200)
+            ciclos = ciclos + 1
+        end
+    else
+        write(led, low)
+    end
 end
 ```
 
@@ -251,8 +256,8 @@ end
 // Generado por el transpiler Tightny
 #include <stdint.h>
 
-const int32_t led   = 13;
-const int32_t boton = 2;
+int32_t led   = 13;
+int32_t boton = 2;
 int32_t encendido = 0;
 int32_t ciclos    = 0;
 
@@ -263,14 +268,19 @@ void setup() {
 
 void loop() {
     if (digitalRead(boton) == LOW) {
-        digitalWrite(led, HIGH);
-        delay(300);
-        digitalWrite(led, LOW);
-        delay(300);
-        ciclos = ciclos + 1;
-    } else {
-        digitalWrite(led, LOW);
-        ciclos = 0;
+        encendido = !encendido;
+        if (encendido == 1) {
+            ciclos = 0;
+            while (ciclos < 5) {
+                digitalWrite(led, HIGH);
+                delay(200);
+                digitalWrite(led, LOW);
+                delay(200);
+                ciclos = ciclos + 1;
+            }
+        } else {
+            digitalWrite(led, LOW);
+        }
     }
 }
 ```
