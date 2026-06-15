@@ -1,1 +1,26 @@
-/Ejemplo1
+# Bytecode de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos generados por setuptools
+*.egg-info/
+*.egg
+
+# Archivos generados por ANTLR
+*.interp
+*.tokens
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Opcional: archivos de editor
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,23 @@
+[project]
+name = "tightny"
+version = "0.1.0"
+description = "Compilador del lenguaje Tightny para Arduino"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "antlr4-python3-runtime>=4.13.1",
+]
+
+[project.scripts]
+tightny = "tightny.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["tightny*"]
+
+[tool.uv.sources]
+# sin cambios especiales
