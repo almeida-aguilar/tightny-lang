@@ -1,0 +1,26 @@
+pin LED : out = 8
+var x = 5
+var y = 10
+
+if x < y then
+    write(LED, high)
+    if x + 1 == y - 4 then
+        write(LED, low)
+    else
+        write(LED, high)
+    end
+else
+    write(LED, low)
+end
+
+# else-if encadenado
+var opcion = 2
+if opcion == 1 then
+    write(LED, high)
+else if opcion == 2 then
+    write(LED, low)
+else if opcion == 3 then
+    wait(50)
+else
+    write(LED, low)
+end

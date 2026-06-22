@@ -1,0 +1,21 @@
+pin LED : out = 12
+var i = 0
+var limite = 5
+
+while i < limite do
+    write(LED, high)
+    wait(200)
+    write(LED, low)
+    wait(200)
+    i = i + 1
+end
+
+# Bucle infinito controlado por variable
+var running = 1
+while running == 1 do
+    write(LED, high)
+    wait(100)
+    write(LED, low)
+    wait(100)
+    running = 0   # solo una iteración
+end

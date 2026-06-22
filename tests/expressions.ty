@@ -1,0 +1,29 @@
+pin DUMMY : out = 5
+var a = 10
+var b = 3
+var c = 0
+var resultado = 0
+
+# Expresiones aritméticas
+resultado = a + b
+resultado = a - b
+resultado = a * b
+resultado = a / b
+
+# Prioridad de operadores
+resultado = a + b * 2
+resultado = (a + b) * 2
+
+# Operadores relacionales y lógicos
+c = 1
+if (a > b) and (c == 1) then
+    resultado = 100
+end
+
+if (a < b) or (c != 0) then
+    resultado = 200
+end
+
+if not (a == b) then
+    resultado = 300
+end

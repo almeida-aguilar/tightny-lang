@@ -17,25 +17,26 @@ class Symbol:
 
 class SymbolTable:
     def __init__(self):
-        self.symbols = {}  # name -> Symbol
-        self.errors = []
+        self.symbols = {}
+        self.pin_count = 0  # nuevo
+        self.var_count = 0  # nuevo
+
+    def declare_pin(self, name, mode, number, line):
+        if name in self.symbols:
+            raise SemanticError(f"Pin '{name}' ya declarado", line)
+        sym = Symbol(name, "pin", line, initialized=True)
+        sym.pin_mode = mode
+        sym.pin_number = number
+        self.symbols[name] = sym
+        self.pin_count += 1  # incrementar
+        return sym
 
     def declare_var(self, name, line, initialized=False):
         if name in self.symbols:
             raise SemanticError(f"Variable '{name}' ya declarada", line)
         sym = Symbol(name, "var", line, initialized)
         self.symbols[name] = sym
-        return sym
-
-    def declare_pin(self, name, mode, number, line):
-        if name in self.symbols:
-            raise SemanticError(f"Pin '{name}' ya declarado", line)
-        sym = Symbol(
-            name, "pin", line, initialized=True
-        )  # el pin se considera inicializado
-        sym.pin_mode = mode
-        sym.pin_number = number
-        self.symbols[name] = sym
+        self.var_count += 1  # incrementar
         return sym
 
     def lookup(self, name):

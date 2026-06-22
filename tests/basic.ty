@@ -1,0 +1,28 @@
+# Prueba básica: pines, variables, asignaciones y write/read/wait
+pin LED : out = 13
+pin BOTON : in = 2
+pin SENSOR : pullup = 7
+
+var contador = 0
+var maximo = 10
+var estado = 0
+
+# Asignación y lectura de pin
+estado = read(BOTON)
+write(LED, estado)
+
+# Bucle simple
+while contador < maximo do
+    write(LED, high)
+    wait(100)
+    write(LED, low)
+    wait(100)
+    contador = contador + 1
+end
+
+# Condicional con else
+if estado == 1 then
+    write(SENSOR, low)
+else
+    write(SENSOR, high)
+end

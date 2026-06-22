@@ -1,0 +1,19 @@
+pin A : out = 2
+pin B : in  = 3
+
+var valor = 0
+
+# write con constantes
+write(A, high)
+write(A, low)
+write(A, 1)
+
+# read con pin
+valor = read(B)
+write(A, valor)
+
+# wait con expresión
+var tiempo = 500
+wait(tiempo)
+wait(tiempo / 2)
+wait(100)

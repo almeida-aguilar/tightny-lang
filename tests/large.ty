@@ -1,0 +1,37 @@
+# Simulación de un semáforo simple
+pin RED    : out = 10
+pin YELLOW : out = 11
+pin GREEN  : out = 12
+pin BUTTON : in  = 2
+
+var estado = 0
+var timeout = 0
+
+# Ciclo principal
+while true do
+    if estado == 0 then
+        write(RED, high)
+        wait(5000)
+        write(RED, low)
+        estado = 1
+    else if estado == 1 then
+        write(GREEN, high)
+        timeout = 0
+        while timeout < 30 do
+            if read(BUTTON) == high then
+                # Peatón pide paso
+                timeout = 30
+            else
+                wait(100)
+                timeout = timeout + 1
+            end
+        end
+        write(GREEN, low)
+        estado = 2
+    else if estado == 2 then
+        write(YELLOW, high)
+        wait(2000)
+        write(YELLOW, low)
+        estado = 0
+    end
+end

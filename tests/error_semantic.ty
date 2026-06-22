@@ -1,0 +1,19 @@
+pin LED : out = 13
+
+# Variable no declarada
+x = 10
+
+# Usar variable sin inicializar (aunque el analizador lo detecte)
+var y
+z = y + 1
+
+# Re-declarar variable
+var temp = 0
+var temp = 1
+
+# Usar pin como variable (asignación a pin no permitida)
+LED = 0
+
+# Llamar read/write con argumento no pin
+var mal = 5
+write(mal, high)

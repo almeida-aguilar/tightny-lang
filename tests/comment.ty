@@ -1,0 +1,10 @@
+# Comentario al inicio
+pin LED : out = 13   # comentario después de código
+# Línea de comentario sola
+
+var x = 0
+# Comentario intermedio
+var y = x + 1
+
+  # Comentario con espacios iniciales
+  var z = 2

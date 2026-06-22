@@ -1,0 +1,13 @@
+pin LED : out = 13
+var x = 5
+
+# Falta 'then'
+if x == 5
+    write(LED, high)
+end
+
+# Asignación mal formada
+y = 10
+
+# Expresión incompleta
+var z =

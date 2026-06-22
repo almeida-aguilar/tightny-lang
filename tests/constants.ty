@@ -1,0 +1,18 @@
+pin LED : out = 9
+var a = high
+var b = low
+var c = true
+var d = false
+
+write(LED, a)
+write(LED, b)
+write(LED, c)   # true = high
+write(LED, d)   # false = low
+
+if a == 1 then
+    write(LED, high)
+end
+
+if d == 0 then
+    write(LED, low)
+end
