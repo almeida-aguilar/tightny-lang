@@ -5,6 +5,7 @@ import time
 from antlr4 import CommonTokenStream, FileStream
 from antlr4.error.ErrorListener import ErrorListener
 
+from tightny.backend.code_generator import CodeGenerator
 from tightny.grammar.gen.tightnyLexer import tightnyLexer
 from tightny.grammar.gen.tightnyParser import tightnyParser
 from tightny.semantic.semantic_visitor import SemanticVisitor
@@ -215,3 +216,14 @@ def main():
     print("└" + "─" * (total_len - 2) + "┘")
 
     print(f"\n{Style.GREEN}Compilación exitosa.{Style.RESET}")
+
+    # 5. Generación de código C++
+    generator = CodeGenerator()
+    generator.visit(tree)
+
+    # Guardar el código generado
+    output_file = archivo.replace(".ty", ".cpp")
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(generator.get_code())
+
+    print(f"\n{Style.GREEN}Código C++ generado en: {output_file}{Style.RESET}")

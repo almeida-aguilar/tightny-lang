@@ -1,0 +1,16 @@
+pin led   : out    = 13
+pin boton : pullup = 2
+
+var contador = 0
+var limite   = 10
+
+if read(boton) == low then
+    write(led, high)
+    wait(300)
+    write(led, low)
+    wait(300)
+    contador = contador + 1
+else
+    write(led, low)
+    contador = 0
+end
